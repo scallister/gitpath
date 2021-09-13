@@ -7,7 +7,6 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	//"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"github.com/yookoala/realpath"
 )
@@ -72,6 +71,7 @@ func getRelativePath(fullPath, repoPath string) string {
 	return relativePath
 }
 
+// createURL - Takes several items and creates a working GitHub / GitLab url
 func createURL(baseURL, branchName, relativePath string) string {
 	var url string
 	if strings.Contains(baseURL, "github") {
@@ -115,12 +115,11 @@ func trimUrlToBase(url string) string {
 		urlTrimmed = strings.Replace(urlTrimmed, ":", "/", 1)
 	}
 	urlTrimmed = strings.TrimSuffix(urlTrimmed, ".git")
-	if ! strings.HasPrefix(urlTrimmed, "https://") {
+	if !strings.HasPrefix(urlTrimmed, "https://") {
 		urlTrimmed = "https://" + urlTrimmed
 	}
 	return urlTrimmed
 }
-
 
 func currentBranchName(repo *git.Repository) (string, error) {
 	head, err := repo.Head()
@@ -131,7 +130,7 @@ func currentBranchName(repo *git.Repository) (string, error) {
 
 	// Check if this is a branch
 	headName := head.Name()
-	if ! headName.IsBranch() {
+	if !headName.IsBranch() {
 		err = errors.New("GitPath only functions when HEAD is pointed at a branch")
 		return "", err
 	}
