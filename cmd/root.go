@@ -1,3 +1,5 @@
+package cmd
+
 /*
 Copyright © 2021 Steven Callister
 
@@ -14,20 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-package cmd
 
 import (
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "gitpath <filepath>",
 	Short: "Returns the URL to a particular git path",
-	RunE: GitPathCmd,
+	RunE:  GitPathCmd,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		verbose, err := cmd.Flags().GetBool("verbose")
