@@ -10,6 +10,11 @@ https://github.com/scallister/gitpath/blob/scallister/initial/README.md
 $ gitpath cmd/root.go
 https://github.com/scallister/gitpath/blob/scallister/initial/cmd/root.go
 ```
+## Brew Install
+```bash
+brew tap scallister/scallister
+brew install gitpath
+```
 
 ## Go Install
 ```bash
