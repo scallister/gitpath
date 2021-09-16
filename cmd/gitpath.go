@@ -47,7 +47,7 @@ func GitPathCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Get Branch Name
-	branchName, err := currentBranchName(repo)
+	branchName, err := currentBranchName(cmd, repo)
 	if err != nil {
 		return err
 	}
@@ -157,7 +157,31 @@ func trimUrlToBase(url string) string {
 	return urlTrimmed
 }
 
-func currentBranchName(repo *git.Repository) (string, error) {
+func currentBranchName(cmd *cobra.Command, repo *git.Repository) (string, error) {
+	// Use flag if a flag was passed
+	mainBranch, err := cmd.Flags().GetBool("main")
+	if err != nil {
+		return "", err
+	}
+	if mainBranch {
+		return "main", nil
+	}
+
+	masterBranch, err := cmd.Flags().GetBool("master")
+	if err != nil {
+		return "", err
+	}
+	if masterBranch {
+		return "master", nil
+	}
+
+	customBranch, err := cmd.Flags().GetString("branch")
+	if err != nil {
+		return "", err
+		return customBranch, nil
+	}
+
+	// Determine branch from repository
 	head, err := repo.Head()
 	if err != nil {
 		err = errors.Wrap(err, "failed to get repository Head")

@@ -55,4 +55,7 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("verbose", "v", false, "Enables verbose logging")
+	rootCmd.Flags().Bool("main", false, "Overrides branch with main")
+	rootCmd.Flags().Bool("master", false, "Overrides branch with master")
+	rootCmd.Flags().StringP("branch", "b", "", "Override branch to this value")
 }
