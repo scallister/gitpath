@@ -43,7 +43,8 @@ func GitPathCmd(cmd *cobra.Command, args []string) error {
 	})
 	if err != nil {
 		err = errors.Wrap(err, "failed to setup repository")
-		return err
+		log.Error().Err(err).Msg("Are you in a git repository?")
+		os.Exit(1)
 	}
 
 	// Get Branch Name
