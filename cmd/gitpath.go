@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -59,7 +61,7 @@ func GitPathCmd(cmd *cobra.Command, args []string) error {
 	log.Trace().Str("baseURL", baseUrl).Msg("")
 
 	// Get relative filepath - to determine what we append to the URL
-	repoPath, err := getRepoRoot(repo)
+	repoPath, err := getRepoRoot()
 	if err != nil {
 		return err
 	}
@@ -103,13 +105,30 @@ func createURL(baseURL, branchName, relativePath string) string {
 	return url
 }
 
-func getRepoRoot(repo *git.Repository) (string, error) {
-	wt, err := repo.Worktree()
+func getRepoRoot() (string, error) {
+	currentPath, err := realpath.Realpath(".")
+	var priorPath string
 	if err != nil {
-		return "", err
+		err = errors.Wrapf(err, "failed to get RealPath for %s", currentPath)
+	}
+	for {
+		l := log.With().
+			Str("currentPath", currentPath).
+			Str("priorPath", priorPath).
+			Logger()
+
+		l.Trace().Msg("Checking current directory for Git project root")
+		if _, err := os.Stat(currentPath + "/.git"); !os.IsNotExist(err) {
+			l.Trace().Msgf("Found repository root %s", currentPath)
+			return currentPath, nil
+		}
+		priorPath = currentPath
+		currentPath = filepath.Dir(currentPath)
+		if currentPath == priorPath {
+			return "", fmt.Errorf("reached %s without finding git project root", currentPath)
+		}
 	}
 
-	return wt.Filesystem.Root(), nil
 }
 
 func getBaseUrl(repo *git.Repository) (string, error) {
