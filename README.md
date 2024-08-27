@@ -18,7 +18,7 @@ brew install gitpath
 
 ## Go Install
 ```bash
-go install https://github.com/scallister/gitpath
+go install github.com/scallister/gitpath@latest
 ```
 
 ## Features
